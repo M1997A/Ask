@@ -1,0 +1,49 @@
+﻿@model LoginVM
+@{
+}
+
+
+<div>
+    <div class="row">
+        <div class="col-2">
+
+        </div>
+        <div class="col-8 bg-white m-2 bg-secondary">
+            <div class="row">
+                <div class="col-2"></div>
+                <div class="col-8">
+                    @if(ViewBag.Message != null)
+                    {
+                        <div class="alert alert-danger">
+                            @ViewBag.Message
+                        </div>
+                    }
+                    <div class="alert bg-info rounded text-white text-center m-2"><h3>Login</h3></div>
+                    <hr />
+                    <div class="border m-3 p-3 rounded">
+                        <form asp-action="Login" method="post">
+                            <input type="hidden" name="ReturnUrl" value="@(ViewBag.ReturnUrl ?? "")"/>
+                            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                            <div class="form-group">
+                                <label asp-for="UserName"></label>
+                                <div><span asp-validation-for="UserName" class="text-danger"></span></div>
+                                <input asp-for="UserName" class="form-control" />
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="Password"></label>
+                                <div><span asp-validation-for="Password" class="text-danger"></span></div>
+                                <input asp-for="Password" type="password" class="form-control" />
+                            </div>
+                            <div class="form-group">
+                                <button class="btn btn-block btn-success" type="submit">Login</button>
+                            </div>
+                        </form>
+                    </div>
+                    <p>Don’t have an account? <a asp-action="Register" asp-controller="Account">Sign up</a></p>
+                </div>
+            </div>
+
+        </div>
+        <div class="col-2"></div>
+    </div>
+</div>

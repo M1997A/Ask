@@ -1,0 +1,36 @@
+﻿body {
+}
+.q-tag {
+    color: #39739d;
+    background-color: #E1ECF4;
+    border-color: #E1ECF4;
+    padding:8px;
+}
+.q-u-info {
+    height: 70px;
+    width: 200px;
+    border-radius: 3px;
+    background-color: #E1ECF4;
+}
+.q-u-time {
+    margin-top: 1px;
+    margin-bottom: 4px;
+    font-size: 12px;
+    white-space: nowrap;
+}
+.navbar-bg {
+    height: 60px;
+    background-image: linear-gradient(180deg, rgb(5, 39, 103) 0%, #3a0647 70%);
+}
+.vote{
+    cursor:pointer
+}
+.ivote {
+    background-color: #E1ECF4;
+    cursor:pointer;
+    
+    width: 52px;
+    height: 55px;
+    border: 1px solid lightgray;
+    margin: 5px;
+}

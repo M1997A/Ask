@@ -1,0 +1,204 @@
+﻿@model QuestionDetails
+@inject UserManager<AppUser> userManager
+@inject SignInManager<AppUser> signInManager
+@{
+    var isUserSigned = signInManager.IsSignedIn(User) ? true : false;
+    var UserId = isUserSigned ? userManager.GetUserId(User) : null;
+}
+
+<div class="container-fluid">
+    <div class="d-block m-2"><h3>@Model.Title</h3></div>
+    <hr />
+    <div class="row">
+        <div class="col-8">
+            <div class="row">
+                <div class="col-1">
+
+                    <div><i onclick="QuestionVoter('@isUserSigned',@Model.QuestionId,'@UserId',true)" title="this question is useful" class="vote fa fa-angle-up fa-3x"></i></div>
+                    <div id="questionVote" class="text-center">@Model.Vote</div>
+                    <div><i onclick="QuestionVoter('@isUserSigned',@Model.QuestionId,'@UserId',false)" title="this question is not useful" class="vote fa fa-angle-down fa-3x"></i></div>
+
+                </div>
+
+                <div class="col-11">
+                    <code class="prettyprint d-flex align-items-start bg-light">
+                        <div class="p-2">@Html.Raw(Model.Body)</div>
+
+                    </code>
+                    <div class="d-flex flex-wrap align-content-start mt-3">
+                        @foreach (var item in Model.QuesTags)
+                        {
+                            <div class="p-2 mr-2 q-tag rounded">@item.TagName</div>
+                        }
+                    </div>
+                    <div class="d-flex flex-wrap align-content-start mt-3">
+                        <a href="#">edit</a>&nbsp;&nbsp;&nbsp;
+                        <a href="#">delete</a>
+                    </div>
+                    <div class="clearfix">
+                        <div class="float-right q-u-info">
+                            <div class="q-u-time p-1 font-weight-light" style="height:20px">@("asked " + GetDate(Model.PostedDate))</div>
+                            <div class="m-2"><img src="@Model.ImagePath" />&nbsp; @Model.UserName</div>
+                        </div>
+                    </div>
+                    <hr />
+                    <div>
+                        @*<button class="btn btn-primary d-block" data-toggle="collapse" data-target="#comment">Add Comment</button>*@
+                        <div id="commentBox">
+                            @foreach (var comment in Model.QuestionComments)
+                            {
+                                <div style="font-size:small">
+                                    @comment.Body
+                                    <span style="color:cornflowerblue" class="ml-2 font-weight-bold">@comment.UserName</span>
+                                    <span class="ml-2">@("commented " + GetDate(comment.CommentDate))</span>
+                                </div>
+                                <hr />
+                            }
+                        </div>
+                            @if (isUserSigned)
+                            {
+                                <div id="comment" class="d-inline-flex mt-3">
+                                    <textarea placeholder="add comment" id="textareaComment" class="rounded mr-2" rows="1" cols="60"></textarea>
+                                    <button class="btn btn-primary" onclick="AddComment('@UserId',@Model.QuestionId)">Submit</button>
+                                </div>
+                            }
+                            else
+                            {
+                                <div><span data-target="#myModal" data-toggle="modal" class="vote">Add comment</span></div>
+                            }
+                        </div>
+
+
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+
+    <div class="row mt-3">
+        <div class="col-8" id="answerParent">
+            <div><span>Answers</span></div>
+            <hr />
+
+
+            @foreach (var answer in Model.AnswerDetails)
+            {
+                <div class="row">
+                    <div class="col-1">
+                        <div> <i onclick="AnswerVoter('@isUserSigned',@answer.AnswerId,'@UserId',true)" title="this answer is useful" class="vote fa fa-angle-up fa-3x"></i></div>
+                        <div class="text-center" id="@answer.AnswerId">@answer.Vote</div>
+                        <div><i onclick="AnswerVoter('@isUserSigned',@answer.AnswerId,'@UserId',false)" title="this answer is not useful" class="vote fa fa-angle-down fa-3x"></i></div>
+
+                    </div>
+                    <div class="col-11">
+                        <div>
+                            <code class="prettyprint d-flex align-items-start bg-light">
+                                <div class="p-2">@Html.Raw(answer.Body)</div>
+
+                            </code>
+                        </div>
+                        <div class="clearfix">
+                            <div class="float-right q-u-info">
+                                <div class="q-u-time p-1 font-weight-light" style="height:20px">@("answered " + GetDate(answer.CommentedDate))</div>
+                                <div class="m-2"><img src="@answer.ImagePath" />&nbsp; @answer.UserName</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <hr />
+            }
+
+
+        </div>
+    </div>
+    @if (isUserSigned)
+    {
+        <form action="javascript:void(0);" method="POST" onsubmit="addItem('@isUserSigned')" id="answerForm">
+            <input type="hidden" id="inputUserId" name="UserId" value="@userManager.GetUserId(User)" />
+            <input type="hidden" id="inputQuestionId" name="QuestionId" value="@Model.QuestionId" />
+
+            <div class="row">
+                <div class="col-8">
+                    <div class="d-flex" style="height:100px"></div>
+                    <span>Your Answer</span>
+                    <div class="text-danger" id="textareaValidation"></div>
+                    <div>
+                        @*<input id="textarea"/>*@
+                        <textarea name="test" id="textarea"></textarea>
+                    </div>
+                    <button id="btn-post" data-toggle="modal" class="btn btn-primary m-3" type="submit">post your answer</button>
+                </div>
+            </div>
+        </form>
+    }
+    else
+    {
+        <div class="btn btn-secondary m-3 text-dark border-0 rounded" data-toggle="modal" data-target="#myModal" type="button">Add you Answer</div>
+    }
+
+</div>
+
+<!-- The Modal -->
+<div class="modal fade" id="myModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title">SignIn first</h4>
+                <button type="button" class="close" data-dismiss="modal">×</button>
+            </div>
+            @{ 
+                var CurrentPath = ViewContext.RouteData.Values;
+                var action = CurrentPath["action" ?? ""];
+                var controller = CurrentPath["controller" ?? ""];
+                var completeUrl = Url.Action(action.ToString(), controller.ToString());
+            }
+            <!-- Modal body -->
+            <div class="modal-body">
+               <a asp-action="Login" asp-controller="Account" asp-route-ReturnUrl="@Context.Request.Path">Sign In </a> Or
+                <a asp-action="Register" asp-controller="Account"> Create new account</a>
+            </div>
+
+            <!-- Modal footer -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+
+
+@functions{
+    string GetDate(DateTime date)
+    {
+        DateTime date2 = DateTime.Now;
+
+        if (date2.Year > date.Year)
+        {
+            return (date2.Year - date.Year).ToString() + " years ago";
+        }
+        else if (date2.Month > date.Month)
+        {
+            return (date2.Month - date.Month).ToString() + " months ago";
+        }
+        else if (date2.Day > date.Day)
+        {
+            return (date2.Day - date.Day).ToString() + " days ago";
+        }
+        else if (date2.Hour > date.Hour)
+        {
+            return (date2.Hour - date.Hour).ToString() + " hours ago";
+        }
+        else if (date2.Minute > date.Minute)
+        {
+            return (date2.Minute - date.Minute).ToString() + " minutes ago";
+        }
+
+        return date.ToString("MM / dd / yyyy");
+    }
+}

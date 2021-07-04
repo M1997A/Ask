@@ -1,0 +1,94 @@
+﻿@model IEnumerable<QuestionView>
+@{
+}
+<div class="jumbotron">
+    <div class="row">
+        <div class="col-md-7">
+           <div class="m-lg-5">
+               <h2>Learn, Ask, Answer</h2>
+               <p>SignUp to create an account to enjoy with our services</p>
+               <p>Here you can ask any question you want and also you can share others with your experience</p>
+               <i>let's go</i>
+           </div>
+        </div>
+       
+        
+    </div>
+
+</div>
+<div>
+    <div class="row">
+        <div class="col-9">
+        
+            <div class="row">
+                <div class="col-8"><h3>Top Questions</h3></div>
+                <div class="col-4"><a asp-action="AskView" asp-controller="Questions" class="btn btn-primary text-white float-right">Ask Question</a></div>
+            </div>
+            <hr />
+            @foreach(var item in Model)
+            {
+                <div class="row mb-2">
+                    <div class="col-1">
+                        <div class="ivote rounded text-center">
+                            <span class="mt-1 text-center d-block">@item.Vote</span>
+                            <a asp-action="QuestionDetails" asp-controller="Questions" asp-route-Id="@item.QuestionId"><small class="mb-1">votes</small></a>
+                        </div>
+                        </div>
+                    <div class="col-1">
+                        <div class="ivote rounded text-center">
+                            <span class="mt-1 text-center d-block">@item.AnswerCount</span>
+                            <a asp-action="QuestionDetails" asp-controller="Questions" asp-route-Id="@item.QuestionId"><small class="mb-1">answer</small></a>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="w-100">
+                            <div class="m-1"><h6><a asp-action="QuestionDetails" asp-controller="Questions" asp-route-Id="@item.QuestionId">@item.Title</a></h6></div>
+                            <div class="m-1">
+                                @foreach (var tag in item.QTags)
+                                {
+                                    <div class="m-1 d-inline q-tag rounded">@tag.Name</div>
+                                }
+                            </div>
+                            <div class="float-right small">
+                                asked by <span style="color:darkturquoise">@item.UserName </span> 
+                                <span>@GetDate(item.TimeSpan)</span>
+                            </div>
+                        </div>
+                        
+                    </div>
+                     
+                       
+                   
+                </div>
+                <hr />
+            }
+
+        </div>
+        <div class="col-3"></div>
+       
+    </div>
+    
+</div>
+@functions{
+    string GetDate(TimeSpan timeSpan)
+    {
+        if(timeSpan.TotalDays > 30)
+        {
+            return ((int)timeSpan.TotalDays / 30).ToString() + " months ago";
+        }
+        else if(timeSpan.TotalHours > 24)
+        {
+            return ((int)timeSpan.TotalHours / 24).ToString() + " days ago";
+        }
+        else if(timeSpan.TotalMinutes > 60)
+        {
+            return ((int)timeSpan.TotalMinutes / 60).ToString() + " hours ago";
+        }
+        else if(timeSpan.TotalSeconds > 60)
+        {
+            return ((int)timeSpan.TotalSeconds / 60).ToString() + " minutes ago";
+        }
+        return "1 minutes ago";
+    }
+}
+

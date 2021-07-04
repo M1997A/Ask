@@ -1,0 +1,19 @@
+﻿@model IEnumerable<Tag>
+@{
+}
+<div class="m-2"><h3>Tags</h3></div>
+<div><p class="text-black-50" style="font-size:15px">A tag is a keyword or label that categorizes your question with other, similar questions. Using the right tags makes it easier for others to find and answer your question.</p></div>
+<hr />
+<div class="card-columns">
+
+    @foreach (var tag in Model)
+    {
+        <div class="card border-light mb-3 mr-2" style="max-width: 18rem;">
+            <div class="card-header bg-transparent"><sp class="q-tag">@tag.Name</sp></div>
+            <div class="card-body text-black-50" >
+                
+                <p class="card-text">@tag.Description</p>
+            </div>
+        </div>
+    }
+</div>
